@@ -7,7 +7,7 @@
 $(document).ready(function(){
 
 //Sets maximum screen size
-var maxDigits = 12;
+var maxDigits = 10;
 
 //Uses BigNumber library to avoid floating point calculation errors
 BigNumber.config({
@@ -155,6 +155,10 @@ var calculator = {
 
 //Display text on calculator screen
 function displayVal(val){
+  //Before displaying total, check to see if result is too long to display on screen (if so display in expential format)
+  if (val.toString().length > maxDigits){
+    val = val.toExponential(maxDigits-6);
+  }
   $("#display-text").empty();
   $("#display-text").text(val);
 }
@@ -178,8 +182,7 @@ $(".dec-button").on("click tap", calculator.decPressed.bind(calculator));
 $(".operation-button").on("click tap", function(){
   //Evaluate the current result and display
   calculator.evaluate();
-  //Before displaying result, check to see if result is too long to display on screen (if so display in expential format)
-  displayVal(calculator.total.toString().length > maxDigits ? calculator.total.toExponential(maxDigits-6): calculator.total);
+  displayVal(calculator.total);
   calculator.operationPressed($(this).attr("id"));
 });
 
@@ -204,13 +207,14 @@ $(".clear-button").on("click tap", function(){
         break;
   }
   //Display total stored in calculator
-  //Before displaying total, check to see if result is too long to display on screen (if so display in expential format)
-  displayVal(calculator.total.toString().length > maxDigits ? calculator.total.toExponential(maxDigits-6): calculator.total);
+
+  displayVal(calculator.total);
 });
 });
 </script>
 
 <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Calculator</title>
 <style>
@@ -225,8 +229,8 @@ body {
 
 /*Body of calculator style*/
 #main {
-    width: 375px;
-    height: 500px;
+    width: 320px;
+    height: 480px;
     background-color: #D8D7D3;
     background: linear-gradient(179deg, #D8D7D3,98%, #888888);
     border-radius: 5%;
@@ -259,7 +263,7 @@ body {
 .calc-button{
   display: inline-block;
 
-  width: 20%;
+  width: 52px;
   max-height: 50px;
   margin:2%;
   border-radius:7%;
